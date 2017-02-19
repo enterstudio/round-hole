@@ -11,7 +11,7 @@ private class RH_OpportunityHelperTest {
 		// Arrange
 		RH_OpportunityHelper targetClass = new RH_OpportunityHelper();
 		Opportunity testOpportunity = createOpportunity();
-		createProjectServiceToken();
+		TEST_ProjectServiceTokenFactory.create(TEST_TOKEN);
 		
 		// Act
 		HttpRequest result;
@@ -104,14 +104,6 @@ private class RH_OpportunityHelperTest {
 		return TEST_OpportunityFactory.create(opportunityTemplate, TEST_DummyInsertModeEnum.MOCK);
 	}
 	
-	private static void createProjectServiceToken() {
-		//ServiceTokens__c.getValues('ProjectServiceToken').token__c
-		insert (new ServiceTokens__c(
-			name = 'ProjectServiceToken',
-			token__c = TEST_TOKEN
-		));
-	}
-
 	private static void assertOpportunityObjectListJson(Id opportunityId, String resultJson) {
 		System.assertEquals(true, resultJson.contains('['));
 		assertOpportunityObjectJson(opportunityId, resultJson);

@@ -1,43 +1,25 @@
 @isTest
 private class ProjectCalloutServiceTest {
-	private static final User TestRunner = TEST_RunAsUserFactory.create(); 
-	
 	@isTest static void testPostOpportunityToPMS(){
 		// Arrange
-		ProjectCalloutService targetClass = new ProjectCalloutService();
-		// TODO
+		Opportunity testOpportunity = TEST_OpportunityFactory.create(TEST_DummyInsertModeEnum.REAL);
+		TEST_ProjectServiceTokenFactory.create();
+		Test.setMock(HttpCalloutMock.class, new ProjectCalloutServiceMock());
 		
 		// Act
-        System.runAs(TestRunner){
+        //System.runAs(TestRunner){
             Test.startTest();
             {
-				// TODO targetClass.TODO();
+				ProjectCalloutService.postOpportunityToPMS(new List<Id>{testOpportunity.id});
             }
             Test.stopTest();
-        }
+        //}
 
 		// Assert
-		// TODO : EXPECTED/ACTUAL
+		Opportunity resultOpportunity = [SELECT stageName FROM Opportunity WHERE id = :testOpportunity.id];
+		System.assertEquals('Submitted Project', resultOpportunity.stageName);
 	}
 	
-	@isTest static void testPostOpportunity(){
-		// Arrange
-		ProjectCalloutService targetClass = new ProjectCalloutService();
-		// TODO
-		
-		// Act
-        System.runAs(TestRunner){
-            Test.startTest();
-            {
-				// TODO targetClass.TODO();
-            }
-            Test.stopTest();
-        }
-
-		// Assert
-		// TODO : EXPECTED/ACTUAL
-	}	
-
 	@isTest static void testQueueablePMSCallExecuteShouldSucceed(){
 		testQueueablePMSCallExecute(new ProjectCalloutServiceMock(), 'Submitted Project');
 	}	
@@ -48,6 +30,7 @@ private class ProjectCalloutServiceTest {
 
 	static void testQueueablePMSCallExecute(HttpCalloutMock calloutMock, String updateStageName) {
 		// Arrange
+		User TestRunner = TEST_RunAsUserFactory.create();
 		Opportunity testOpportunity = TEST_OpportunityFactory.create(TEST_DummyInsertModeEnum.MOCK);
 		DB_OpportunitiesSelectorMock opportunitySelector = new DB_OpportunitiesSelectorMock();  
 		RH_OpportunityHelperMock opportunityHelper = new RH_OpportunityHelperMock();

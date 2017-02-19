@@ -1,6 +1,7 @@
 @isTest
 public class TEST_OpportunityFactory extends TEST_SObjectFactory {
 	private static Map<String, Object> defaultByKeyMap = new Map<String, Object>{
+		'closeDate' => Date.today(),
 		'stageName' => 'New'
 	}; 
 	
