@@ -31,6 +31,7 @@ public virtual class TEST_SObjectFactory {
 			this.defaultByKeyMap = defaultByKeyMap;
 		}
 		
+/*
 		public SObjectInQuantityStrategy(SObject template, Integer quantity, String defaultName){
 			this(template, quantity, defaultName, new Map<String, Object>());
 		}
@@ -38,6 +39,7 @@ public virtual class TEST_SObjectFactory {
 		public SObjectInQuantityStrategy(SObject template, Integer quantity){
 			this(template, quantity, 'SObject', new Map<String, Object>());
 		}
+*/
 		  
 		public virtual List<SObject> execute(List<SObject> mockSObjectList) {
 			for (Integer i = 1; i <= this.quantity; i++) {
@@ -60,7 +62,7 @@ public virtual class TEST_SObjectFactory {
 	}
 
 	// ----------------------------------------------------------------------------------------------
-	
+/*	
 	public virtual class nSObjectPerRelatedSObjectStrategy extends SObjectInQuantityStrategy {
 		String relatedField;
 		List<SObject> sObjectList;
@@ -144,7 +146,7 @@ public virtual class TEST_SObjectFactory {
 				return nameField;
 		}
 	}
-     	
+*/     	
 	// ----------------------------------------------------------------------------------------------
 	
 	public static SObject fillIfBlank (SObject sObj, String targetField, Object fillValue) {

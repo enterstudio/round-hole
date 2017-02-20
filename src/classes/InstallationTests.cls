@@ -33,10 +33,4 @@ private class InstallationTests {
         p.Opportunity__c = opp.Id;
         insert p;
     }
-    
-    //Test empty service stub
-	static testmethod void testProjectCalloutServiceForInstall() {
-	    ProjectCalloutService.postOpportunityToPMS();
-	}
-
 }

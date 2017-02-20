@@ -3,14 +3,16 @@
 global with sharing class ProjectRESTService {
 	DB_GenericDml genericDml;
 	DB_ProjectDml projectDml;
+	DB_SavePointHelper savePointHelper;
 	
-	global ProjectRESTService(DB_GenericDml genericDml, DB_ProjectDml projectDml){ 
+	global ProjectRESTService(DB_GenericDml genericDml, DB_ProjectDml projectDml, DB_SavePointHelper savePointHelper){ 
 		this.genericDml = genericDml;
 		this.projectDml = projectDml;
-	}
+		this.savePointHelper = savePointHelper;
+	} 
 	
 	global ProjectRESTService(){
-		this(new DB_GenericDml(), new DB_ProjectDml());
+		this(new DB_GenericDml(), new DB_ProjectDml(), new DB_SavePointHelper());
 	}
     
     /* Sample input: {
@@ -33,7 +35,7 @@ global with sharing class ProjectRESTService {
 	 	Double	    amount,
 	 	String	    status
     ) {
-    	return (new ProjectRESTService()).createProject(new Project__c(
+    	return (new ProjectRESTService()).upsertProject(new Project__c(
     		projectRef__c = projectRef,
     		name = projectName,
 			opportunity__c = opportunityId,
@@ -45,9 +47,9 @@ global with sharing class ProjectRESTService {
     }
     
     @testVisible
-    private String createProject(Project__c project) {
-    	SavePoint savePoint = Database.setSavePoint();
-    	Database.UpsertResult upsertResult = this.projectDml.doUpsertUsingProjectRefAsExternalKey(new List<Project__c>{project})[0];
+    private String upsertProject(Project__c project) {
+    	SavePoint savePoint = savePointHelper.setSavePoint();
+    	Database.UpsertResult upsertResult = this.projectDml.doUpsertUsingProjectRefAsExternalKey(new List<Project__c>{project}, false)[0];
     	return (!upsertResult.isSuccess()) 
     				? buildErrorString(upsertResult.getErrors())
     				: setOpportunityToInProgress(project.opportunity__c, savePoint);
@@ -60,9 +62,9 @@ global with sharing class ProjectRESTService {
     			deliveryInstallationStatus__c = 'In Progress'
     		);
     	
-    	Database.SaveResult saveResult = this.genericDml.doUpdate(new List<Opportunity>{updatedOpportunity})[0];
+    	Database.SaveResult saveResult = this.genericDml.doUpdate(new List<Opportunity>{updatedOpportunity}, false)[0];
     	if (!saveResult.isSuccess()){
-    		Database.rollback(savePoint);
+    		savePointHelper.rollback(savePoint);
     		return buildErrorString(saveResult.getErrors());
     	}
     	
