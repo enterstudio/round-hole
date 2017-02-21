@@ -1,3 +1,5 @@
 trigger ProjectTrigger on Project__c (after update) {
-    //Call the Billing Service callout logic here
+    //fflib_SObjectDomain.triggerHandler(BillingCalloutService.class);
+    BillingCalloutService.callBillingService(Trigger.new, Trigger.oldMap);
 }
+ 
